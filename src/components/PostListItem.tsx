@@ -1,6 +1,7 @@
 import { Post } from "@/types";
-import { Text, View, StyleSheet, Image } from "react-native";
+import { Text, View, StyleSheet, Image, Pressable } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import { Link } from "expo-router";
 
 type PostListItemProps = {
   post: Post;
@@ -24,30 +25,37 @@ function FooterItem({ text, icon }: FooterItemProps) {
 
 export function PostListItem({ post }: PostListItemProps) {
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Image source={{ uri: post.author.image }} style={styles.userImage} />
-        <View>
-          <Text style={styles.userName}>{post.author.name}</Text>
-          <Text>{post.author.position}</Text>
+    <Link href={`/posts/${post.id}`} asChild>
+      <Pressable style={styles.container}>
+        {/* Header */}
+        <Link href={`/users/${post.author.id}`} asChild>
+          <Pressable style={styles.header}>
+            <Image
+              source={{ uri: post.author.image }}
+              style={styles.userImage}
+            />
+            <View>
+              <Text style={styles.userName}>{post.author.name}</Text>
+              <Text>{post.author.position}</Text>
+            </View>
+          </Pressable>
+        </Link>
+        {/* Text content */}
+        <Text style={styles.content}>{post.content}</Text>
+
+        {/* Image Content */}
+        {post.image && (
+          <Image source={{ uri: post.image }} style={styles.postImage} />
+        )}
+
+        {/* footer */}
+        <View style={styles.footer}>
+          <FooterItem text="Like" icon="thumbs-o-up" />
+          <FooterItem text="Comment" icon="comment-o" />
+          <FooterItem text="Share" icon="share" />
         </View>
-      </View>
-      {/* Text content */}
-      <Text style={styles.content}>{post.content}</Text>
-
-      {/* Image Content */}
-      {post.image && (
-        <Image source={{ uri: post.image }} style={styles.postImage} />
-      )}
-
-      {/* footer */}
-      <View style={styles.footer}>
-        <FooterItem text="Like" icon="thumbs-o-up" />
-        <FooterItem text="Comment" icon="comment-o" />
-        <FooterItem text="Share" icon="share" />
-      </View>
-    </View>
+      </Pressable>
+    </Link>
   );
 }
 
