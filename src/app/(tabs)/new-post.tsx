@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   input: {
     height: 100,
     borderBottomWidth: 0.2,
-    borderColor: "lightgay",
+    borderColor: "lightgray",
     fontSize: 18,
   },
   title: {

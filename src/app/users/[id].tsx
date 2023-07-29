@@ -9,7 +9,7 @@ import {
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useLayoutEffect, useState } from "react";
 
-import userJson from "../../../assets/data/users.json";
+import userJson from "../../../assets/data/user.json";
 import { User } from "@/types";
 import ExperienceListItem from "@/components/ExperienceListItem";
 
