@@ -5,25 +5,50 @@ import {
   Pressable,
   StyleSheet,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import { useNavigation, useRouter } from "expo-router";
 import { useLayoutEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { FontAwesome } from "@expo/vector-icons";
+import { gql, useMutation } from "@apollo/client";
+
+const insertPost = gql`
+  mutation MyMutation($userid: ID, $image: String, $content: String!) {
+    insertPost(content: $content, image: $image, userid: $userid) {
+      content
+      id
+      image
+      userid
+    }
+  }
+`;
 
 export default function NewPostScreen() {
   const [content, setContent] = useState("");
   const [image, setImage] = useState<string | null>(null);
 
+  const [handleMutation, { loading, error, data }] = useMutation(insertPost);
+
   const navigation = useNavigation();
   const router = useRouter();
 
-  const onPost = () => {
+  const onPost = async () => {
     console.warn("post created", content);
+    try {
+      await handleMutation({
+        variables: {
+          userid: 3,
+          content,
+        },
+      });
 
-    router.push("/(tabs)/");
-    setContent("");
-    setImage(null);
+      router.push("/(tabs)/");
+      setContent("");
+      setImage(null);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const pickImage = async () => {
@@ -45,11 +70,13 @@ export default function NewPostScreen() {
     navigation.setOptions({
       headerRight: () => (
         <Pressable onPress={onPost} style={styles.postButton}>
-          <Text style={styles.postButtonText}>Post</Text>
+          <Text style={styles.postButtonText}>
+            {loading ? <ActivityIndicator /> : "Submit"}
+          </Text>
         </Pressable>
       ),
     });
-  }, [onPost]);
+  }, [onPost, loading]);
   return (
     <View style={styles.container}>
       <TextInput

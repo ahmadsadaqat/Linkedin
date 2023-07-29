@@ -2,7 +2,6 @@ import { ActivityIndicator, StyleSheet, Text } from "react-native";
 import { PostListItem } from "@/components/PostListItem";
 import { FlatList } from "react-native-gesture-handler";
 
-// import posts from "../../../assets/data/posts.json";
 import { gql, useQuery } from "@apollo/client";
 
 const postList = gql`
