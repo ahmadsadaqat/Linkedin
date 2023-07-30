@@ -40,15 +40,16 @@ export function PostListItem({ post }: PostListItemProps) {
             </View>
           </Pressable>
         </Link>
+
         {/* Text content */}
         <Text style={styles.content}>{post.content}</Text>
 
-        {/* Image Content */}
+        {/* Image content */}
         {post.image && (
           <Image source={{ uri: post.image }} style={styles.postImage} />
         )}
 
-        {/* footer */}
+        {/* Footer */}
         <View style={styles.footer}>
           <FooterItem text="Like" icon="thumbs-o-up" />
           <FooterItem text="Comment" icon="comment-o" />
