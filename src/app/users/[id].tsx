@@ -5,18 +5,45 @@ import {
   Text,
   Pressable,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect } from "react";
 
-import userJson from "../../../assets/data/user.json";
-import { User } from "@/types";
+// import userJson from "../../../assets/data/user.json";
+// import { User } from "@/types";
 import ExperienceListItem from "@/components/ExperienceListItem";
+import { gql, useQuery } from "@apollo/client";
+import { Experience } from "@/types";
+
+const query = gql`
+  query MyQuery($id: ID!) {
+    profile(id: $id) {
+      about
+      id
+      image
+      name
+      position
+      experience {
+        companyimage
+        companyname
+        id
+        title
+        userid
+      }
+      backimage
+    }
+  }
+`;
 
 export default function UserProfileScreen() {
-  const [user, setUser] = useState<User>(userJson);
-
+  // const [user, setUser] = useState<User>(userJson);
   const { id } = useLocalSearchParams();
+
+  const { loading, error, data } = useQuery(query, { variables: { id } });
+
+  const user = data?.profile;
+
   const navigation = useNavigation();
 
   const onConnect = () => {
@@ -24,15 +51,24 @@ export default function UserProfileScreen() {
   };
 
   useLayoutEffect(() => {
-    navigation.setOptions({ title: user.name });
+    navigation.setOptions({ title: user?.name || "User" });
   }, [user?.name]);
+
+  if (loading) {
+    return <ActivityIndicator />;
+  }
+
+  if (error) {
+    console.log(error);
+    return <Text>Something Went Wrong, please try Again later</Text>;
+  }
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
       <View style={styles.header}>
         {/* Bg image */}
-        <Image source={{ uri: user.backImage }} style={styles.backImage} />
+        <Image source={{ uri: user.backimage }} style={styles.backImage} />
         {/* Profile Image */}
         <View style={styles.headerContent}>
           <Image source={{ uri: user.image }} style={styles.userImage} />
@@ -54,7 +90,7 @@ export default function UserProfileScreen() {
       {/* Experience */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Experience</Text>
-        {user.experience?.map((experience) => (
+        {user.experience?.map((experience: Experience) => (
           <ExperienceListItem key={experience.id} experience={experience} />
         ))}
       </View>

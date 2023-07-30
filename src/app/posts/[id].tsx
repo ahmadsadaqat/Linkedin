@@ -24,7 +24,7 @@ const post = gql`
 export default function PostDetailScreen() {
   const { id } = useLocalSearchParams();
   const { loading, error, data } = useQuery(post, { variables: { id } });
-  // const post = posts.find((post) => post.id === id);
+
   if (loading) {
     return <ActivityIndicator />;
   }
@@ -32,10 +32,6 @@ export default function PostDetailScreen() {
   if (error) {
     console.log(error);
     return <Text>Something Went Wrong, please try Again later</Text>;
-  }
-
-  if (!post) {
-    return <Text style={{ fontSize: 25 }}>Post Not Found</Text>;
   }
 
   console.log(data);

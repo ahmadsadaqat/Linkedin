@@ -38,7 +38,7 @@ export default function NewPostScreen() {
     try {
       await handleMutation({
         variables: {
-          userid: 3,
+          userid: 2,
           content,
         },
       });
